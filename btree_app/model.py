@@ -1,3 +1,4 @@
+
 from __future__ import annotations
 
 import copy
@@ -18,8 +19,7 @@ class BTree:
         self.root = Node(True)
         self.narration = []
         self._touched = set()
-        self.history = []  # [{title, text, tree, t, touched}]
-
+        self.history = []  
 
 
     def _log(self, texto):
@@ -28,7 +28,7 @@ class BTree:
     def _record(self, titulo, before=None, process=None):
         snap = copy.deepcopy(self.root)
         texto = "\n".join(f"{i+1}. {s}" for i, s in enumerate(self.narration))
-
+  
         texto += "\n\nInvariantes mantenidas:"
         texto += f"\n  • Todos los caminos de la raíz a una hoja tienen la misma longitud."
         texto += f"\n  • Cada nodo (excepto la raíz) tiene entre t-1={self.t-1} y 2t-1={2*self.t-1} claves."
@@ -52,6 +52,7 @@ class BTree:
             "t": self.t,
             "touched": set(self._touched),
         })
+
 
     def search(self, k):
         self.narration = []
@@ -109,7 +110,7 @@ class BTree:
         )
         return self._search(x.children[i], k)
 
-
+  
 
     def insert(self, k):
         self.narration = []
@@ -198,15 +199,11 @@ class BTree:
             )
             if len(x.children[i].keys) == 2 * t - 1:
                 self._split_child(x, i)
-                # Convención CLRS: si k coincide exactamente con la clave
-                # mediana recién ascendida, se desciende por la izquierda.
-                # Esto nunca ocurre en la práctica porque insert() ya
-                # rechaza claves duplicadas antes de llegar aquí.
                 if k > x.keys[i]:
                     i += 1
             self._insert_nonfull(x.children[i], k)
 
-
+  
 
     def delete(self, k):
         self.narration = []
@@ -257,7 +254,6 @@ class BTree:
         y = x.children[i]
         z = x.children[i + 1]
         sep = x.keys.pop(i)
-        self._touched.add(sep)
         self._log(
             f"Se fusionan (COALESCE) el nodo {y.keys} con {z.keys}: la clave "
             f"separadora {sep} baja del padre y se ubica entre ambos, formando "
